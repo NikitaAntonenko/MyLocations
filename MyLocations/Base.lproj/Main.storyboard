@@ -83,7 +83,7 @@
                         <outlet property="getButton" destination="7Xe-FU-rqD" id="zWW-8V-vv8"/>
                         <outlet property="latitudeLabel" destination="wFQ-3c-vLf" id="p7U-Q0-qax"/>
                         <outlet property="longitudeLabel" destination="Jyg-d7-sJ3" id="lzp-2g-DZo"/>
-                        <outlet property="massageLabel" destination="Drn-Gn-XLx" id="vuk-Os-c6z"/>
+                        <outlet property="messageLabel" destination="Drn-Gn-XLx" id="vuk-Os-c6z"/>
                         <outlet property="tagButton" destination="ZT0-bz-Rc6" id="agw-Nh-A9x"/>
                     </connections>
                 </viewController>
