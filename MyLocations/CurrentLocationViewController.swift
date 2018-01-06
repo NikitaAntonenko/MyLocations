@@ -21,6 +21,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     // Variables ---
     let locationManager = CLLocationManager() // The CLLocationManager is the object that will give you the GPS coordinates.
     var location: CLLocation? // Will store the most recent update of user's location
+    var updatingLocation = false // Flag
+    var lastLocationError: Error?
     // =========================================
     
     // Override functions ======
@@ -50,20 +52,19 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             return
         }
         
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
-        locationManager.startUpdatingLocation()
+        startLocationManager()
+        updateLabels()
     }
     // =========================
     
     // Functions ===============
-    // Alert for situation when we do not have enable to the location services
+    // Alert for situation when we do not have enable to the location services ---
     func showLocationServicesDeniedAlert() {
         let alert = UIAlertController(title: "Location Services Disabled", message: "Please enable location services for this app in Settings.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert,animated: true,completion: nil)
     }
-    // Update labels
+    // Update labels ---
     func updateLabels() {
         if let location = location {
             latitudeLabel.text = String(format: "%.8f", location.coordinate.latitude)
@@ -75,20 +76,67 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             longitudeLabel.text = ""
             addressLabel.text = ""
             tagButton.isHidden = true
-            messageLabel.text = "Tap 'Get My Location' to Start"
+            
+            // Fill message ---
+            var statusMessage: String
+            if let error = (lastLocationError as NSError?) {
+                if error.code == CLError.denied.rawValue &&
+                    error.domain == kCLErrorDomain {
+                    statusMessage = "Location Services Disabled"
+                } else {
+                    statusMessage = "Error Getting Location"
+                }
+            } else if !CLLocationManager.locationServicesEnabled() {
+                statusMessage = "Location Services Disabled"
+            } else if updatingLocation {
+                statusMessage = "Searching..."
+            } else {
+                statusMessage = "Tap 'Get My Location' to start"
+            }
+            // -----------------
+            
+            messageLabel.text = statusMessage
+        }
+    }
+    // Start Location Manager ---
+    func startLocationManager() {
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation
+            locationManager.startUpdatingLocation()
+            updatingLocation = true
+        }
+    }
+    // Stop Location Manager ---
+    func stopLocationManager() {
+        if updatingLocation {
+            locationManager.stopUpdatingLocation()
+            locationManager.delegate = nil
+            updatingLocation = false
         }
     }
     // =========================
     
     // CLLocationManegerDelegate ===========
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // Print error
         print("didFailWithError \(error)")
+        // if an error can't get any location information. We are trying until we find a location.
+        if (error as NSError).code == CLError.locationUnknown.rawValue { return }
+        // Moer sirious error we store into a new instance variable
+        lastLocationError = error
+        
+        stopLocationManager()
+        updateLabels()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = locations.last!
         print("didUpdateLocations \(location!)")
         updateLabels()
+        
+        // Wipe teh old error code
+        lastLocationError = nil
     }
     // =====================================
 
