@@ -31,6 +31,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     var placemark: CLPlacemark? // This is the object that contains the address results.
     var performingReverseGeocoding = false // Flag.
     var lastGeocodingError: Error? // Save the last error when something went wrong with Geocoding.
+    // Others ---
+    var timer: Timer?
     // =========================================
     
     // Override functions ======
@@ -141,6 +143,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
             locationManager.startUpdatingLocation()
             updatingLocation = true
+            timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(didTimeOut), userInfo: nil, repeats: false)
         }
     }
     // Stop Location Manager ---
@@ -172,6 +175,19 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
         
         return line1 + "\n" + line2
     }
+    // For Timer of searching location
+    @objc func didTimeOut() {
+        print("*** Time out")
+        // If not found no location in time
+        if location == nil {
+            stopLocationManager()
+            
+            lastLocationError = NSError(domain: "MyLocationErrorDomian", code: 1, userInfo: nil)
+            
+            updateLabels()
+            configureGetButton()
+        }
+    }
     // =========================
     
     // CLLocationManegerDelegate ===========
@@ -199,6 +215,11 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
         if newLocation.timestamp.timeIntervalSinceNow < -5 { return }
         // 2. To determine wether new readings are more accurate than previous ones
         if newLocation.horizontalAccuracy < 0 { return }
+        // 2.5 Get distance between the new reading and the previous reading location, if there was one
+        var distance = CLLocationDistance(Double.greatestFiniteMagnitude)
+        if let location = location {
+            distance = newLocation.distance(from: location)
+        }
         // 3. if the new reading is more useful than the privious one
         if location == nil || newLocation.horizontalAccuracy < location!.horizontalAccuracy {
             // 4. Go next
@@ -213,6 +234,10 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
                 print("*** We're done!")
                 stopLocationManager()
                 configureGetButton()
+                // That is above so strange code!!!
+                // One tip, if distance is between 0 and 1, this locations is same!
+                if distance > 0 { performingReverseGeocoding = false }
+                // --------------------------------
             }
             // 6. Let's Geocode
             if !performingReverseGeocoding {
@@ -231,6 +256,14 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
                     self.performingReverseGeocoding = false
                     self.updateLabels()
                 })
+            }
+        } else if distance < 1 { // if the cordinate is not significant different we are stoping searching location
+            let timeInterval = newLocation.timestamp.timeIntervalSince(location!.timestamp)
+            if timeInterval > 10 {
+                print("*** Force done!")
+                stopLocationManager()
+                updateLabels()
+                configureGetButton()
             }
         }
         // ---------------------------
