@@ -51,6 +51,17 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             locationManager.requestWhenInUseAuthorization()
         }
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Check Identifier
+        if segue.identifier == "TagLocation" {
+            let navigationController = segue.destination as! UINavigationController
+            let controller = navigationController.topViewController as! LocationDatailsViewController
+            // Write data into the controller
+            controller.coordinate = location!.coordinate
+            controller.placemark = placemark
+        }
+    } 
     // =========================
     
     // Actions =================
