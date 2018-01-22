@@ -38,7 +38,11 @@ class LocationDatailsViewController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     @IBAction func done() {
-        dismiss(animated: true, completion: nil)
+        let hudView = HudView.hud(inView: navigationController!.view, animated: true)
+        hudView.text = "Tagged"
+        afterDelay(0.5) {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
     @IBAction func categoryPickerDidPickCategory (_ segue: UIStoryboardSegue) {
         let controller = segue.source as! CategoryPickerViewController
@@ -66,6 +70,19 @@ class LocationDatailsViewController: UITableViewController {
     func format(date: Date) -> String {
         return dateFormatter.string(from: date)
     }
+    
+    // I can hide the keyboard. I will execute whenewer the user taps somewhere in the viev (set in viewDidLoad())
+    @objc func hideKeyboard(_ gestureRecognizer: UIGestureRecognizer) {
+        let point = gestureRecognizer.location(in: tableView)
+        let indexPath = tableView.indexPathForRow(at: point)
+        
+        if let indexPath = indexPath,
+            indexPath.section == 0 && indexPath.row == 0 {
+            return
+        }
+        
+        descriptionTextView.resignFirstResponder()
+    }
     // =========================================
 
     // Override functions ======================
@@ -83,8 +100,17 @@ class LocationDatailsViewController: UITableViewController {
         else { addressLabel.text = "No Address Found" }
         dateLabel.text = format(date: Date())
         
-        descriptionTextView.becomeFirstResponder()
+        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
+        gestureRecognizer.cancelsTouchesInView = false
+        tableView.addGestureRecognizer(gestureRecognizer)
     }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    // MARK: -UITAbleViewDelegate
     
     // I known how tall each cell is.
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -101,10 +127,17 @@ class LocationDatailsViewController: UITableViewController {
             return addressLabel.frame.size.height + 20
         } else { return 44 } // Remaining labels
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        // If section of indexPath no zero or one didSelectRowAt delegate won't execute !!!
+        if indexPath.section == 0 || indexPath.section == 1 { return indexPath }
+        else { return nil }
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 && indexPath.row == 0 {
+            descriptionTextView.becomeFirstResponder()
+        }
     }
     
     // MARK: - Table view data source

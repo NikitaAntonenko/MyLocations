@@ -54,7 +54,7 @@ class CategoryPickerViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return categories.count
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // Create the cell
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
