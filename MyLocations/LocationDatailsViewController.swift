@@ -66,7 +66,7 @@ class LocationDatailsViewController: UITableViewController {
                 self.dismiss(animated: true, completion: nil)
             }
         } catch {
-            fatalError("Error: \(error)")
+            fatalCoreDataError(error)
         }
         
         

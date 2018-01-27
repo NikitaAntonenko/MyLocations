@@ -11,7 +11,7 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    // MARK: Properties ===============================================
+    // MARK: - Properties ===============================================
     var window: UIWindow?
     // The purpose of two lazy variables that create the "managedObjectContext" !!!
     lazy var persistentContainer: NSPersistentContainer = {
@@ -29,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     // ==========================================================
     
-    // MARK: Mandatory Functions ======================================
+    // MARK: - Mandatory Functions ======================================
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let tabBarController = window!.rootViewController as! UITabBarController
@@ -37,6 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let currentLocationViewController = tapBatViewControllers[0] as! CurrentLocationViewController
             currentLocationViewController.managedObjectContext = managedObjectContext
         }
+        listenForFatalCoreDataNotifications()
         return true
     }
 
@@ -63,7 +64,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     // ==========================================================
     
-    // MARK: Functions ================================================
+    // MARK: - Functions ========================================
+    func listenForFatalCoreDataNotifications() {
+        NotificationCenter.default.addObserver(forName: MyManagedObjectContextSaveDidFailNotification, object: nil, queue: .main, using: { nitification in
+            // 1. Create Alert
+            let alert = UIAlertController(title: "Internal Error", message: "There was a fatal errer in the app and it cannot continue. \n\n Press OK to terminate the app. Sorry for the inconvenience.", preferredStyle: .alert)
+            // 2. Create "OK" action
+            let action = UIAlertAction(title: "OK", style: .default, handler: { _ in
+                let exeption = NSException(name: NSExceptionName.internalInconsistencyException, reason: "Fatal Core Data Error", userInfo: nil)
+                exeption.raise()
+                })
+            // 3. Add "OK" action to the alsert
+            alert.addAction(action)
+            // 4. Show the alert
+            self.viewControllerForShowingAlert().present(alert, animated: true, completion: nil)
+            })
+        
+    }
+    
+    func viewControllerForShowingAlert() -> UIViewController {
+        let rootViewController = window!.rootViewController!
+        
+        if let presentedViewController = rootViewController.presentedViewController {
+            return presentedViewController
+        } else {
+            return rootViewController
+        }
+    }
     // ==========================================================
 
 }

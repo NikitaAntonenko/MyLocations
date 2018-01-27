@@ -14,6 +14,11 @@ import Dispatch
 func afterDelay(_ seconds: Double, closure: @escaping () -> ()) {
     DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: closure)
 }
+// 2. It sends the notification to anyone who is listening
+func fatalCoreDataError(_ error: Error) {
+    print("*** Fatal Error: \(error)")
+    NotificationCenter.default.post(name: MyManagedObjectContextSaveDidFailNotification, object: nil)
+}
 // =============================================================================
 
 
@@ -23,4 +28,6 @@ let applicationDocumentsDirectory: URL = {
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     return paths[0]
 }()
+// 2. My new notification
+let MyManagedObjectContextSaveDidFailNotification = Notification.Name(rawValue: "MyManagedObjectContextSaveDidFailNotification")
 // =============================================================================
