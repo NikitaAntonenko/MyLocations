@@ -10,7 +10,7 @@ import UIKit
 
 class CategoryPickerViewController: UITableViewController {
     
-    // Variables ===========================
+    // MARK: - Variables ===========================
     var selectedCategoryName = ""
     var selectedIndexPath = IndexPath()
     
@@ -29,7 +29,7 @@ class CategoryPickerViewController: UITableViewController {
     
     // =====================================
     
-    // Override functions ================================
+    // MARK: - Override functions ================================
     override func viewDidLoad() {
         super.viewDidLoad()
         // Set the seletedIndexPath variable (selectedCategoryName already exist)
@@ -48,7 +48,7 @@ class CategoryPickerViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
 
-    // MARK: - Table view data source
+    // MARK: Table view data source ---
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
@@ -127,7 +127,7 @@ class CategoryPickerViewController: UITableViewController {
     */
 
     
-    // MARK: - Navigation
+    // MARK: Navigation ---
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

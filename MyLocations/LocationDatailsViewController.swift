@@ -12,7 +12,7 @@ import CoreData
 
 class LocationDatailsViewController: UITableViewController {
 
-    // Outlets ==============================
+    // MARK: - Outlets ==============================
     @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var latitudeLabel: UILabel!
@@ -21,7 +21,7 @@ class LocationDatailsViewController: UITableViewController {
     @IBOutlet weak var dateLabel: UILabel!
     // =========================================
     
-    // Variables ==============================
+    // MARK: - Variables ==============================
     // For Location ---
     var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     var placemark: CLPlacemark?
@@ -39,7 +39,7 @@ class LocationDatailsViewController: UITableViewController {
     var managedObjectContext: NSManagedObjectContext! // need for to do something with Core Data
     // ========================================
     
-    // Actions =================================
+    // MARK: - Actions =================================
     @IBAction func cancel() {
         dismiss(animated: true, completion: nil)
     }
@@ -78,7 +78,7 @@ class LocationDatailsViewController: UITableViewController {
     }
     // =========================================
     
-    // Functions ===============================
+    // MARK: - Functions ===============================
     
     // Placemark translator
     func string(from placemark: CLPlacemark) -> String {
@@ -112,7 +112,7 @@ class LocationDatailsViewController: UITableViewController {
     }
     // =========================================
 
-    // Override functions ======================
+    // MARK: - Override functions ======================
     
     override func viewDidLoad() {
         // phase one
@@ -137,7 +137,7 @@ class LocationDatailsViewController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    // MARK: -UITAbleViewDelegate
+    // MARK: UITAbleViewDelegate ---
     
     // I known how tall each cell is.
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -167,7 +167,7 @@ class LocationDatailsViewController: UITableViewController {
         }
     }
     
-    // MARK: - Table view data source
+    // MARK: Table view data source ---
 
     /*override func numberOfSections(in tableView: UITableView) -> Int {
         // #warning Incomplete implementation, return the number of sections
@@ -224,7 +224,7 @@ class LocationDatailsViewController: UITableViewController {
     }
     */
 
-    // MARK: - Navigation
+    // MARK: Navigation ---
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

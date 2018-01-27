@@ -12,7 +12,7 @@ import CoreData
 
 class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate {
     
-    // Outlets ==============================
+    // MARK: - Outlets ==============================
     @IBOutlet weak var messageLabel: UILabel!
     @IBOutlet weak var latitudeLabel: UILabel!
     @IBOutlet weak var longitudeLabel: UILabel!
@@ -21,7 +21,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     @IBOutlet weak var getButton: UIButton!
     // =========================================
 
-    // Variables ============================
+    // MARK: - Variables ============================
     // For location managet ---
     let locationManager = CLLocationManager() // This is the object that will give you the GPS coordinates.
     var location: CLLocation? // Will store the most recent update of user's location.
@@ -38,7 +38,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     var timer: Timer?
     // =========================================
     
-    // Override functions ======
+    // MARK: - Override functions ======
     override func viewDidLoad() {
         // phase one ---
         super.viewDidLoad()
@@ -68,7 +68,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     } 
     // =========================
     
-    // Actions =================
+    // MARK: - Actions =================
     @IBAction func getLocation() {
         // Stop or Start?
         if updatingLocation {
@@ -99,7 +99,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     }
     // =========================
     
-    // Functions ===============
+    // MARK: - Functions ===============
     // Alert for situation when we do not have enable to the location services ---
     func showLocationServicesDeniedAlert() {
         let alert = UIAlertController(title: "Location Services Disabled", message: "Please enable location services for this app in Settings.", preferredStyle: .alert)
@@ -205,7 +205,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     }
     // =========================
     
-    // CLLocationManegerDelegate ===========
+    // MARK: - CLLocationManegerDelegate ===========
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         // 1. Print error
         print("didFailWithError \(error)")

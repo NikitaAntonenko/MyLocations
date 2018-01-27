@@ -9,11 +9,11 @@
 import UIKit
 
 class HudView: UIView {
-    // Variables ========
+    // MARK: - Variables ========
     var text = ""
-    // ==================
+    // ==========================
     
-    // Type functions ==============================================
+    // MARK: - Type functions ==============================================
     class func hud(inView view: UIView, animated: Bool) -> HudView {
         // 1. Initialization
         let hudView = HudView(frame: view.bounds)
@@ -27,9 +27,9 @@ class HudView: UIView {
         
         return hudView
     }
-    // ===============================================================
+    // =====================================================================
     
-    // Override functions ============================================
+    // MARK: - Override functions ============================================
     // Only override draw() if you perform custom drawing.
     // An empty implementation adversely affects performance during animation.
     override func draw(_ rect: CGRect) {
@@ -69,9 +69,9 @@ class HudView: UIView {
         // 3. Draw
         text.draw(at: textPoint, withAttributes: attribs)
     }
-    // ===============================================================
+    // =======================================================================
 
-    // Functions =====================================================
+    // MARK: - Functions =====================================================
     func show(animated: Bool) {
         if animated {
             // 1. Set up the initial state of the view before the animation starts
@@ -85,7 +85,7 @@ class HudView: UIView {
             }, completion: nil)
         }
     }
-    // ===============================================================
+    // =======================================================================
 
 
 }

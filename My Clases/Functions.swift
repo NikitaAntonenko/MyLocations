@@ -9,15 +9,18 @@
 import Foundation
 import Dispatch
 
-// MARK: Global functions ---
+// MARK: - Global functions ====================================================
 // 1. For doing delay
 func afterDelay(_ seconds: Double, closure: @escaping () -> ()) {
     DispatchQueue.main.asyncAfter(deadline: .now() + seconds, execute: closure)
 }
+// =============================================================================
 
-// MARK: Global constants ---
+
+// MARK: - Global constants ====================================================
 // 1. Return the address 
 let applicationDocumentsDirectory: URL = {
     let paths = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     return paths[0]
 }()
+// =============================================================================

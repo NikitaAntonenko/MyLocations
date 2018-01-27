@@ -11,7 +11,7 @@ import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-    // Properties ===============================================
+    // MARK: Properties ===============================================
     var window: UIWindow?
     // The purpose of two lazy variables that create the "managedObjectContext" !!!
     lazy var persistentContainer: NSPersistentContainer = {
@@ -26,9 +26,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
     lazy var managedObjectContext: NSManagedObjectContext =
         persistentContainer.viewContext
+    
     // ==========================================================
     
-    
+    // MARK: Mandatory Functions ======================================
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let tabBarController = window!.rootViewController as! UITabBarController
@@ -60,7 +61,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
+    // ==========================================================
+    
+    // MARK: Functions ================================================
+    // ==========================================================
 
 }
 
