@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import CoreData
 
 class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate {
     
@@ -31,6 +32,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     var placemark: CLPlacemark? // This is the object that contains the address results.
     var performingReverseGeocoding = false // Flag.
     var lastGeocodingError: Error? // Save the last error when something went wrong with Geocoding.
+    // For Core Data ---
+    var managedObjectContext: NSManagedObjectContext! // need for to do something with Core Data
     // Others ---
     var timer: Timer?
     // =========================================
@@ -60,6 +63,7 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             // Write data into the controller
             controller.coordinate = location!.coordinate
             controller.placemark = placemark
+            controller.managedObjectContext = managedObjectContext
         }
     } 
     // =========================

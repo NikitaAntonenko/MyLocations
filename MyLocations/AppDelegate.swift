@@ -7,15 +7,35 @@
 //
 
 import UIKit
+import CoreData
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
+    // Properties ===============================================
     var window: UIWindow?
-
-
+    // The purpose of two lazy variables that create the "managedObjectContext" !!!
+    lazy var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "DataModel")
+        container.loadPersistentStores() {
+            storeDescription, error in
+            if let error = error {
+                fatalError("Could load data store: \(error)")
+            }
+        }
+        return container
+    }()
+    lazy var managedObjectContext: NSManagedObjectContext =
+        persistentContainer.viewContext
+    // ==========================================================
+    
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let tabBarController = window!.rootViewController as! UITabBarController
+        if let tapBatViewControllers = tabBarController.viewControllers {
+            let currentLocationViewController = tapBatViewControllers[0] as! CurrentLocationViewController
+            currentLocationViewController.managedObjectContext = managedObjectContext
+        }
         return true
     }
 

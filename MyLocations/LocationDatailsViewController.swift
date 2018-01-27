@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreLocation
+import CoreData
 
 class LocationDatailsViewController: UITableViewController {
 
@@ -21,9 +22,11 @@ class LocationDatailsViewController: UITableViewController {
     // =========================================
     
     // Variables ==============================
+    // For Location ---
     var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     var placemark: CLPlacemark?
     var categoryName = "No Category"
+    var date = Date()
     
     private let dateFormatter: DateFormatter = { // I know how translate "Data()" to string
         let formatter = DateFormatter()          // And I can configurate myself with closure help (Dop. init)
@@ -31,6 +34,9 @@ class LocationDatailsViewController: UITableViewController {
         formatter.timeStyle = .short
         return formatter
     }()
+    
+    // For Core Data ---
+    var managedObjectContext: NSManagedObjectContext! // need for to do something with Core Data
     // ========================================
     
     // Actions =================================
@@ -38,11 +44,32 @@ class LocationDatailsViewController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     @IBAction func done() {
+        // Show Tagged View ---
         let hudView = HudView.hud(inView: navigationController!.view, animated: true)
         hudView.text = "Tagged"
-        afterDelay(0.5) {
-            self.dismiss(animated: true, completion: nil)
+        
+        // Save in Core Data ---
+        // 1. Create Location object
+        let location = Location(context: managedObjectContext)
+        // 2. Set location object
+        location.locationDescription = descriptionTextView.text
+        location.category = categoryName
+        location.latitude = coordinate.latitude
+        location.longitude = coordinate.longitude
+        location.date = date
+        location.placemark = placemark
+        // 3. Try to save
+        do{
+            try managedObjectContext.save()
+            
+            afterDelay(0.5) {
+                self.dismiss(animated: true, completion: nil)
+            }
+        } catch {
+            fatalError("Error: \(error)")
         }
+        
+        
     }
     @IBAction func categoryPickerDidPickCategory (_ segue: UIStoryboardSegue) {
         let controller = segue.source as! CategoryPickerViewController
@@ -98,7 +125,7 @@ class LocationDatailsViewController: UITableViewController {
         longitudeLabel.text = String(format: "%.8f", coordinate.longitude)
         if let placemark = placemark { addressLabel.text = string(from: placemark) }
         else { addressLabel.text = "No Address Found" }
-        dateLabel.text = format(date: Date())
+        dateLabel.text = format(date: date)
         
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         gestureRecognizer.cancelsTouchesInView = false
