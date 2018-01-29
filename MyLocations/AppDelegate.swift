@@ -34,8 +34,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         let tabBarController = window!.rootViewController as! UITabBarController
         if let tapBatViewControllers = tabBarController.viewControllers {
+            // For first screen
             let currentLocationViewController = tapBatViewControllers[0] as! CurrentLocationViewController
             currentLocationViewController.managedObjectContext = managedObjectContext
+            // Fpr second screen
+            let navigationController = tapBatViewControllers[1] as! UINavigationController
+            let locationsViewController = navigationController.viewControllers[0] as! LocationsViewController
+            locationsViewController.managedObjectContext = managedObjectContext
         }
         listenForFatalCoreDataNotifications()
         return true
