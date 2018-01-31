@@ -41,6 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             let navigationController = tapBatViewControllers[1] as! UINavigationController
             let locationsViewController = navigationController.viewControllers[0] as! LocationsViewController
             locationsViewController.managedObjectContext = managedObjectContext
+            // Start fetchResultsController with viewDidLoad() by LocationsViewController
+            _ = locationsViewController.view
         }
         listenForFatalCoreDataNotifications()
         return true

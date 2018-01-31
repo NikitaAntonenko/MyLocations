@@ -22,10 +22,11 @@ class LocationDatailsViewController: UITableViewController {
     // =========================================
     
     // MARK: - Variables ==============================
-    // For Location ---
+    // MARK: For Location ---
+    var descriptionText = ""
+    var categoryName = "No Category"
     var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     var placemark: CLPlacemark?
-    var categoryName = "No Category"
     var date = Date()
     
     private let dateFormatter: DateFormatter = { // I know how translate "Data()" to string
@@ -35,8 +36,21 @@ class LocationDatailsViewController: UITableViewController {
         return formatter
     }()
     
-    // For Core Data ---
+    // MARK: For Core Data ---
     var managedObjectContext: NSManagedObjectContext! // need for to do something with Core Data
+    
+    // MARK: For Edit Location ---
+    var locationToEdit: Location? {
+        didSet{
+            if let location = locationToEdit {
+                descriptionText = location.locationDescription
+                categoryName = location.category
+                coordinate = CLLocationCoordinate2D(latitude: location.latitude, longitude: location.longitude)
+                placemark = location.placemark
+                date = location.date
+            }
+        }
+    }
     // ========================================
     
     // MARK: - Actions =================================
@@ -44,21 +58,26 @@ class LocationDatailsViewController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     @IBAction func done() {
-        // Show Tagged View ---
+        // 1. Create Location object for save
+        let location: Location
+        // 2. Show Tagged View
         let hudView = HudView.hud(inView: navigationController!.view, animated: true)
-        hudView.text = "Tagged"
-        
-        // Save in Core Data ---
-        // 1. Create Location object
-        let location = Location(context: managedObjectContext)
-        // 2. Set location object
+        // 3. Configure the Tagged View and the locatiol "let" variable
+        if let temp = locationToEdit {
+            hudView.text = "Updated"
+            location = temp
+        } else {
+            hudView.text = "Tagged"
+            location = Location(context: managedObjectContext)
+        }
+        // 4. Fill the location object
         location.locationDescription = descriptionTextView.text
         location.category = categoryName
         location.latitude = coordinate.latitude
         location.longitude = coordinate.longitude
         location.date = date
         location.placemark = placemark
-        // 3. Try to save
+        // 5. Try to save the location
         do{
             try managedObjectContext.save()
             
@@ -117,8 +136,11 @@ class LocationDatailsViewController: UITableViewController {
     override func viewDidLoad() {
         // phase one
         super.viewDidLoad()
+        if let location = locationToEdit {
+            title = "Edit Location"
+        }
         // 1. Set first section
-        descriptionTextView.text = ""
+        descriptionTextView.text = descriptionText
         categoryLabel.text = categoryName
         // 2. Set third section
         latitudeLabel.text = String(format: "%.8f", coordinate.latitude)
