@@ -60,34 +60,47 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZT0-bz-Rc6">
-                                <rect key="frame" x="114" y="269" width="93" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Tag Location"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZT0-bz-Rc6">
+                                <rect key="frame" x="108" y="269" width="104" height="30"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="  Tag Location  ">
+                                    <color key="titleColor" white="1" alpha="0.94820205479999997" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
-                                    <segue destination="8Vv-3w-mQe" kind="presentation" identifier="TagLocation" id="FjV-wl-h7Q"/>
+                                    <action selector="tagLacation:" destination="9pv-A4-QxB" eventType="touchUpInside" id="Nil-or-2pm"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Xe-FU-rqD">
-                                <rect key="frame" x="102" y="414" width="117" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                <state key="normal" title="Get My Location"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Xe-FU-rqD">
+                                <rect key="frame" x="96" y="419" width="128" height="30"/>
+                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="  Get My Location  ">
+                                    <color key="titleColor" white="1" alpha="0.94820205479999997" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
                                 <connections>
                                     <action selector="getLocation" destination="9pv-A4-QxB" eventType="touchUpInside" id="9Zj-U4-SQd"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="ZT0-bz-Rc6" firstAttribute="centerX" secondItem="PQr-Ze-W5v" secondAttribute="centerX" id="5fZ-ee-COP"/>
+                            <constraint firstItem="ZT0-bz-Rc6" firstAttribute="centerY" secondItem="tsR-hK-woN" secondAttribute="centerY" id="SAx-pg-Veq"/>
+                            <constraint firstItem="7Xe-FU-rqD" firstAttribute="centerX" secondItem="PQr-Ze-W5v" secondAttribute="centerX" id="SD9-Vp-ivw"/>
+                            <constraint firstItem="7Xe-FU-rqD" firstAttribute="centerY" secondItem="tsR-hK-woN" secondAttribute="centerY" constant="150" id="oXJ-fE-Xwq"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="PQr-Ze-W5v"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Tag" image="first" id="acW-dT-cKf"/>
+                    <tabBarItem key="tabBarItem" title="Tag" image="first" selectedImage="first" id="acW-dT-cKf"/>
                     <connections>
                         <outlet property="addressLabel" destination="TDJ-qb-ito" id="ael-ZH-K5D"/>
                         <outlet property="getButton" destination="7Xe-FU-rqD" id="zWW-8V-vv8"/>
+                        <outlet property="getButtonConstraint" destination="SD9-Vp-ivw" id="zzm-rL-v6E"/>
                         <outlet property="latitudeLabel" destination="wFQ-3c-vLf" id="p7U-Q0-qax"/>
                         <outlet property="longitudeLabel" destination="Jyg-d7-sJ3" id="lzp-2g-DZo"/>
                         <outlet property="messageLabel" destination="Drn-Gn-XLx" id="vuk-Os-c6z"/>
                         <outlet property="tagButton" destination="ZT0-bz-Rc6" id="agw-Nh-A9x"/>
+                        <outlet property="tagButtonConstraint" destination="5fZ-ee-COP" id="8cV-e7-jpc"/>
+                        <segue destination="8Vv-3w-mQe" kind="presentation" identifier="TagLocation" id="mtL-Ei-GBe"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
@@ -167,7 +180,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OvJ-ej-HSc">
+                                                <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="OvJ-ej-HSc">
                                                     <rect key="frame" x="145" y="11" width="133" height="21"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                 </imageView>
@@ -307,10 +320,12 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="addPhotoLabel" destination="LLQ-3u-Fji" id="8C2-2R-hT8"/>
                         <outlet property="addressLabel" destination="2iS-DM-a9G" id="rvo-y5-C2A"/>
                         <outlet property="categoryLabel" destination="ByB-Xn-c7F" id="zIK-m3-Udj"/>
                         <outlet property="dateLabel" destination="J1U-Hg-rf8" id="MI9-Uu-zSl"/>
                         <outlet property="descriptionTextView" destination="64V-vb-PmG" id="DLG-KL-QRq"/>
+                        <outlet property="imageView" destination="OvJ-ej-HSc" id="ED8-bZ-aBV"/>
                         <outlet property="latitudeLabel" destination="NZr-7R-fHn" id="vDh-bZ-e7K"/>
                         <outlet property="longitudeLabel" destination="huF-2S-A7J" id="hDH-Yh-ZXJ"/>
                     </connections>
@@ -401,7 +416,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="57" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="5Kq-8o-5Cz">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="selectedControlColor" catalog="System" colorSpace="catalog"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="LocationCell" rowHeight="57" id="bLg-cq-VzX" customClass="LocationCell" customModule="MyLocations">
                                 <rect key="frame" x="0.0" y="28" width="320" height="57"/>
@@ -413,15 +428,15 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="58d-Gx-7I8">
                                             <rect key="frame" x="16" y="11" width="288" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                            <color key="textColor" red="0.24455438999415988" green="0.7555813457781726" blue="0.1946038701182905" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Address" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KgE-8H-tnx">
                                             <rect key="frame" x="16" y="29" width="288" height="17"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                            <color key="textColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                                            <color key="textColor" red="0.16183193997616069" green="0.5" blue="0.12877757716336163" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
@@ -448,7 +463,7 @@
         <scene sceneID="NRJ-KI-KKj">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="N3m-Aj-azv" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Locations" id="plj-dQ-MV0"/>
+                    <tabBarItem key="tabBarItem" title="Locations" image="second" selectedImage="second" id="plj-dQ-MV0"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="8ih-YM-kcT">
                         <rect key="frame" x="0.0" y="20" width="320" height="44"/>
@@ -466,6 +481,7 @@
     </scenes>
     <resources>
         <image name="first" width="30" height="30"/>
+        <image name="second" width="30" height="30"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="6R6-13-Fb5"/>

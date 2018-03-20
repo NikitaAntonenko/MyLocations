@@ -19,6 +19,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var tagButton: UIButton!
     @IBOutlet weak var getButton: UIButton!
+    @IBOutlet weak var tagButtonConstraint: NSLayoutConstraint!
+    @IBOutlet weak var getButtonConstraint: NSLayoutConstraint!
     // =========================================
 
     // MARK: - Variables ============================
@@ -36,6 +38,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     var managedObjectContext: NSManagedObjectContext! // need for to do something with Core Data
     // Others ---
     var timer: Timer?
+    var animationOfGetButtonIsDone = false
+    var animationOfTagButtonIsDone = false
     // =========================================
     
     // MARK: - Override functions ======
@@ -53,6 +57,24 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
         if authStatus == .notDetermined {
             locationManager.requestWhenInUseAuthorization()
         }
+        // 3. Drow buttons
+        tagButton.layer.cornerRadius = 10
+        getButton.layer.cornerRadius = 10
+        // 4. Hide all buttons
+        getButtonConstraint.constant -= view.bounds.width
+        tagButtonConstraint.constant += view.bounds.width
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        if !animationOfGetButtonIsDone {
+            UIView.animate(withDuration: 0.5, delay: 0, options: .curveEaseOut, animations: {
+                self.getButtonConstraint.constant += self.view.bounds.width
+                self.view.layoutIfNeeded()
+                }, completion: nil)
+            animationOfGetButtonIsDone = true
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -69,7 +91,23 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     // =========================
     
     // MARK: - Actions =================
+    @IBAction func tagLacation(_ sender: UIButton) {
+        // 1. Animation
+        let bounds = sender.bounds
+        
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.2, initialSpringVelocity: 10, options: .curveEaseInOut, animations: {
+            sender.bounds = CGRect(x: bounds.origin.x - 20, y: bounds.origin.y, width: bounds.size.width + 60, height: bounds.size.height)
+        }) { (success:Bool) in
+            if success {
+                sender.bounds = bounds
+                self.performSegue(withIdentifier: "TagLocation", sender: sender)
+            }
+        }
+        
+    }
+    
     @IBAction func getLocation() {
+        
         // Stop or Start?
         if updatingLocation {
             // Stop ---
@@ -111,8 +149,8 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
         if let location = location {
             latitudeLabel.text = String(format: "%.8f", location.coordinate.latitude)
             longitudeLabel.text = String(format: "%.8f", location.coordinate.longitude)
-            tagButton.isHidden = false
             messageLabel.text = ""
+            animateTagButton()
             // Fill Address Label ---
             if let placemark = placemark {
                 addressLabel.text = string(from: placemark)
@@ -128,7 +166,6 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             latitudeLabel.text = ""
             longitudeLabel.text = ""
             addressLabel.text = ""
-            tagButton.isHidden = true
             
             // Fill message ---
             var statusMessage: String
@@ -172,9 +209,9 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
     // Configure Get Button ---
     func configureGetButton() {
         if updatingLocation {
-            getButton.setTitle("Stop", for: .normal)
+            getButton.setTitle("  Stop  ", for: .normal)
         } else {
-            getButton.setTitle("Get My Location", for: .normal)
+            getButton.setTitle("  Get My Location  ", for: .normal)
         }
     }
     // Placemark translator
@@ -201,6 +238,16 @@ class CurrentLocationViewController: UIViewController, CLLocationManagerDelegate
             
             updateLabels()
             configureGetButton()
+        }
+    }
+    
+    func animateTagButton() {
+        if !animationOfTagButtonIsDone {
+            UIView.animate(withDuration: 0.5, delay: 0.3, options: .curveEaseOut, animations: {
+                self.tagButtonConstraint.constant -= self.view.bounds.width
+                self.view.layoutIfNeeded()
+            }, completion: nil)
+            animationOfTagButtonIsDone = true
         }
     }
     // =========================

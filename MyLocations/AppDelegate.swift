@@ -33,12 +33,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         let tabBarController = window!.rootViewController as! UITabBarController
-        if let tapBatViewControllers = tabBarController.viewControllers {
+        if let tapBarViewControllers = tabBarController.viewControllers {
             // For first screen
-            let currentLocationViewController = tapBatViewControllers[0] as! CurrentLocationViewController
+            let currentLocationViewController = tapBarViewControllers[0] as! CurrentLocationViewController
             currentLocationViewController.managedObjectContext = managedObjectContext
             // Fpr second screen
-            let navigationController = tapBatViewControllers[1] as! UINavigationController
+            let navigationController = tapBarViewControllers[1] as! UINavigationController
             let locationsViewController = navigationController.viewControllers[0] as! LocationsViewController
             locationsViewController.managedObjectContext = managedObjectContext
             // Start fetchResultsController with viewDidLoad() by LocationsViewController

@@ -19,6 +19,8 @@ class LocationDatailsViewController: UITableViewController {
     @IBOutlet weak var longitudeLabel: UILabel!
     @IBOutlet weak var addressLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var addPhotoLabel: UILabel!
     // =========================================
     
     // MARK: - Variables ==============================
@@ -28,9 +30,21 @@ class LocationDatailsViewController: UITableViewController {
     var coordinate = CLLocationCoordinate2D(latitude: 0, longitude: 0)
     var placemark: CLPlacemark?
     var date = Date()
-    
-    private let dateFormatter: DateFormatter = { // I know how translate "Data()" to string
-        let formatter = DateFormatter()          // And I can configurate myself with closure help (Dop. init)
+    var image: UIImage? {
+        didSet {
+            if let theImage = image {
+                show(image: theImage)
+            }
+        }
+    }
+    // MARK: Anouther ---
+    // Stores the reference to the observer of "NotificationCenter" named "UIApplicationDidEnterBackground",
+    // which is necessary to unregister it later.
+    var observer: Any!
+    // I know how translate "Data()" to string
+    // And I can configurate myself with closure help (Dop. init)
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short
         return formatter
@@ -54,6 +68,10 @@ class LocationDatailsViewController: UITableViewController {
     // ========================================
     
     // MARK: - Actions =================================
+    deinit {
+        // Remove the observer of "NotificationCenter" named "UIApplicationDidEnterBackground"
+        NotificationCenter.default.removeObserver(observer)
+    }
     @IBAction func cancel() {
         dismiss(animated: true, completion: nil)
     }
@@ -129,6 +147,29 @@ class LocationDatailsViewController: UITableViewController {
         
         descriptionTextView.resignFirstResponder()
     }
+    
+    // I can show the image on a proper cell
+    func show(image: UIImage) {
+        imageView.image = image
+        imageView.isHidden = false
+        imageView.frame = CGRect(x: 0, y: 0, width: view.bounds.size.width,
+                                 height: view.bounds.size.width * image.size.height / image.size.width)
+        addPhotoLabel.isHidden = true
+    }
+    
+    func listenForBackgroundNotification() {
+        observer = NotificationCenter.default.addObserver(forName: Notification.Name.UIApplicationDidEnterBackground, object: nil, queue: .main) {
+             [weak self] _ in
+            // 1. If there is an active any of the screens (image picker or action sheet), I dismiss it
+            if let strongSelf = self {
+                if strongSelf.presentedViewController != nil {
+                    strongSelf.dismiss(animated: true, completion: nil)
+                }
+                // 2. Hide the keyboard if the text view was active
+                strongSelf.descriptionTextView.resignFirstResponder()
+            }
+        }
+    }
     // =========================================
 
     // MARK: - Override functions ======================
@@ -136,7 +177,7 @@ class LocationDatailsViewController: UITableViewController {
     override func viewDidLoad() {
         // phase one
         super.viewDidLoad()
-        if let location = locationToEdit {
+        if locationToEdit != nil {
             title = "Edit Location"
         }
         // 1. Set first section
@@ -152,6 +193,8 @@ class LocationDatailsViewController: UITableViewController {
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideKeyboard))
         gestureRecognizer.cancelsTouchesInView = false
         tableView.addGestureRecognizer(gestureRecognizer)
+        
+        listenForBackgroundNotification()
     }
     
     override func didReceiveMemoryWarning() {
@@ -163,8 +206,12 @@ class LocationDatailsViewController: UITableViewController {
     
     // I known how tall each cell is.
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        if indexPath.section == 0 && indexPath.row == 0 { return 88 } // Description label
-        else if indexPath.section == 2 && indexPath.row == 2 { // Address label
+        switch (indexPath.section, indexPath.row) {
+        case (0,0): // Description label
+            return 88
+        case (1,0): // Image cell
+            return imageView.isHidden ? 44 : imageView.bounds.size.height
+        case (2,2): // Address label
             // 1. Storyboard parametrs
             // 2. Change the current width
             addressLabel.frame.size = CGSize(width: view.bounds.size.width - 115, height: 10_000)
@@ -174,7 +221,9 @@ class LocationDatailsViewController: UITableViewController {
             addressLabel.frame.origin.x = view.bounds.size.width - addressLabel.frame.size.width - 15
             // Return seting parametrs with boards (10 at the top and at the end)
             return addressLabel.frame.size.height + 20
-        } else { return 44 } // Remaining labels
+        default:
+            return 44
+        }
     }
     
     override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
@@ -184,8 +233,14 @@ class LocationDatailsViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 && indexPath.row == 0 {
+        switch (indexPath.section, indexPath.row) {
+        case (0,0):
             descriptionTextView.becomeFirstResponder()
+        case(1,0):
+            tableView.deselectRow(at: indexPath, animated: true)
+            pickPhoto()
+        default:
+            break
         }
     }
     
@@ -259,6 +314,107 @@ class LocationDatailsViewController: UITableViewController {
         }
     }
     // =========================================
-    
-
 }
+
+// MARK: - The photo picker
+extension LocationDatailsViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    // Use Camera
+    func takePhotoWithCamera() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .camera
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true, completion: nil)
+    }
+    // Use Library
+    func choosePhotoFromLibrary() {
+        let imagePicker = UIImagePickerController()
+        imagePicker.sourceType = .photoLibrary
+        imagePicker.delegate = self
+        imagePicker.allowsEditing = true
+        present(imagePicker, animated: true, completion: nil)
+    }
+    // Show the photo menu
+    func showPhotoMenu() {
+        let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let takePhotoAction = UIAlertAction(title: "Take Photo", style: .default, handler: {_ in self.takePhotoWithCamera()})
+        let chooseFromLibraryAction = UIAlertAction(title: "Choose From Library", style: .default, handler: {_ in self.choosePhotoFromLibrary()})
+        // Set actions
+        alertController.addAction(cancelAction)
+        alertController.addAction(takePhotoAction)
+        alertController.addAction(chooseFromLibraryAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    // If camera is enabled
+    func pickPhoto() {
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            showPhotoMenu()
+        } else {
+            choosePhotoFromLibrary()
+        }
+    }
+    
+    // MARK: For delegate ---
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        image = info[UIImagePickerControllerEditedImage] as? UIImage
+        tableView.reloadData() // Very important row
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
